@@ -15,13 +15,11 @@ module.exports = (function() {
 
 	fs.readFile(file, 'utf8', function (err, data) {
 		if (err) {
-			console.log("Dictionary file does not exist.");
 			writeDictionaryToFile();
 			return;
 		}
 
 		dictionary = JSON.parse(data);
-		console.log("Successfully read dictionary from file: " + file);
 	});
 
 	var writeDictionaryToFile = function() {
@@ -33,7 +31,6 @@ module.exports = (function() {
 				console.log('Error: ' + error);
 				return;
 			}
-			console.log("Successfully wrote dictionary to file: " + file);
 		});
 	};
 
