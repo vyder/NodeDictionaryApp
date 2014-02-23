@@ -1,7 +1,11 @@
 {
 	"name": "NetworkClient",
+	"description": "A simple dictionary app",
 	"version": "0.0.1",
+	"author": "Vidur Murali <vidur.murali@gmail.com>",
 	"dependencies": {
-		"express": "*"
-	}
+		"express": "*",
+		"nodemon": "1.0.15"
+	},
+	"repository": { "type": "git", "url": "" }
 }

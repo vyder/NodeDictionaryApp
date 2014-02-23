@@ -1,5 +1,5 @@
 var express = require("express");
-var Dictionary = require("./dictionary.js");
+var Dictionary = require("./dictionary");
 var app = express();
 
 // Config
