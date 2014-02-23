@@ -37,32 +37,17 @@ app.get('/add', function(req, res) {
 	req.header('Content-Type', 'application/json');
 	var response = {};
 
-	var respondWith = function(error, message) {
-		if( error ) {
-			response = {
-				error: {
-					message: message
-				}
-			};
-		} else {
-			response = {
-				success: {
-					message: message
-				}
-			};
-		}
-		res.send(response);
-	};
-
 	var word = req.query.word;
 	var definition = req.query.definition;
 	var overwrite = req.query.overwrite;
 
 	if( !word ) {
-		respondWith(true, "'word' is a required parameter");
+		response.error = { message: "'word' is a required parameter" };
+		res.send(response);
 	}
 	if( !definition ) {
-		respondWith(true, "'definition' is a required parameter");
+		response.error = { message: "'definition' is a required parameter" };
+		res.send(response);
 	}
 
 	var result = Dictionary.add(
@@ -72,10 +57,11 @@ app.get('/add', function(req, res) {
 	);
 
 	if( result ) {
-		respondWith(false, "Successfully added '" + word + "'.");
+		response.success = { message: "Successfully added '" + word + "'." };
 	} else {
-		respondWith(true, "'" + word + "' already exists in the dictionary. Specify parameter 'overwrite' to true.");
+		response.error = { message: "'" + word + "' already exists in the dictionary. Specify parameter 'overwrite' to true." };
 	}
+	res.send(response);
 });
 
 app.listen(PORT);
