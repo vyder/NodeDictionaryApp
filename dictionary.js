@@ -1,57 +1,52 @@
-module.exports = (function() {
+var Dictionary = function() {
+	this.initialize.apply(this, arguments);
+};
 
-	var default_dictionary = {
-		"banana": "A fruit",
-		"Baker": "A goofball",
-		"Goliath": "Defeated by David",
-		"Water": "Thanks, I'm thirsty now",
-		"Coke": "The Elixir of Life"
-	};
+Dictionary.prototype.initialize = function(options) {
+	this._file = options.file;
+	this._dictionary = {};
+	this._importFromFile();
+};
 
-	var dictionary = default_dictionary;
+Dictionary.prototype.lookup = function( word ) {
+	var definition = this._dictionary[word];
+	return (definition) ? definition : null;
+};
 
+Dictionary.prototype.add = function( word, definition, overwrite ) {
+	if( !word || typeof word !== 'string' || !definition || typeof definition !== 'string' ) {
+		return false;
+	}
+
+	if( this._dictionary[word] && !overwrite ) {
+		return false;
+	}
+
+	this._dictionary[word] = definition;
+	this._writeToFile();
+
+	return true;
+};
+
+Dictionary.prototype._importFromFile = function() {
 	var fs = require("fs");
-	var file = __dirname + '/dictionary.json';
 
-	fs.readFile(file, 'utf8', function (err, data) {
-		if (err) {
-			writeDictionaryToFile();
+	var data = fs.readFileSync(this._file, 'utf8');
+	this._dictionary = JSON.parse(data);
+};
+
+Dictionary.prototype._writeToFile = function() {
+	var fs = require("fs");
+
+	// Write the dictionary to prettily formatted string
+	var fileContent = JSON.stringify(this._dictionary, null, 4);
+
+	fs.writeFile(this._file, fileContent, 'utf8', function (error) {
+		if (error) {
+			// hmm
 			return;
 		}
-
-		dictionary = JSON.parse(data);
 	});
+};
 
-	var writeDictionaryToFile = function() {
-		// Write the dictionary to prettily formatted string
-		var fileContent = JSON.stringify(dictionary, null, 4);
-
-		fs.writeFile(file, fileContent, 'utf8', function (error) {
-			if (error) {
-				console.log('Error: ' + error);
-				return;
-			}
-		});
-	};
-
-	return {
-		lookup: function( word ) {
-			var definition = dictionary[word];
-			return (definition) ? definition : null;
-		},
-		add: function( word, definition, overwrite ) {
-			if( !word || typeof word !== 'string' || !definition || typeof definition !== 'string' ) {
-				return false;
-			}
-
-			if( dictionary[word] && !overwrite ) {
-				return false;
-			}
-
-			dictionary[word] = definition;
-			writeDictionaryToFile();
-
-			return true;
-		}
-	};
-})();
+module.exports = Dictionary;

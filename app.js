@@ -1,18 +1,32 @@
 var express = require("express");
 var Dictionary = require("./dictionary");
 var app = express();
+var dictionary;
+
+app.configure('production', function() {
+	dictionary = new Dictionary({
+		file: __dirname + '/dictionary.json'
+	});
+});
+
+app.configure('test', function() {
+	dictionary = new Dictionary({
+		file: __dirname + '/test/test_dictionary.json'
+	});
+});
 
 app.get('/hello', function(req, res) {
 	res.header('Content-Type', 'text/plain');
 	res.send("Hello.");
 });
 
+
 app.get('/lookup', function(req, res) {
 	req.header('Content-Type', 'application/json');
 	var response = {};
 
 	var word = req.query.word;
-	var definition = Dictionary.lookup(word);
+	var definition = dictionary.lookup(word);
 
 	if( definition ) {
 		response = {
@@ -47,7 +61,7 @@ app.get('/add', function(req, res) {
 		res.send(response);
 	}
 
-	var result = Dictionary.add(
+	var result = dictionary.add(
 		req.query.word,
 		req.query.definition,
 		req.query.overwrite
