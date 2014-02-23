@@ -12,10 +12,15 @@ task :nyan do
 	run_mocha_tests('nyan')
 end
 
-desc "Run tests with useful output (optionally specify reporter)"
-task :test, :reporter do |t, args|
-	reporter = args[:reporter] || 'spec'
-	run_mocha_tests(reporter)
+desc "Run tests with useful output"
+task :test do
+	run_mocha_tests('spec')
+end
+
+desc "Run coverage tests"
+task :coverage do
+	istanbul_cmd = "istanbul cover _mocha -- -R spec"
+	exec( istanbul_cmd )
 end
 
 
