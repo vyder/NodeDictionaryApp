@@ -29,7 +29,7 @@ writeTestDictionary(test_dictionary);
 
 // Start app in test environment
 process.env.NODE_ENV = 'test';
-var app = require("../app.js");
+var app = require("../app/app.js");
 
 
 describe('Test static paths', function() {

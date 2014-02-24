@@ -1,17 +1,17 @@
 var express = require("express");
-var Dictionary = require("./dictionary");
+var Dictionary = require("../lib/dictionary");
 var app = express();
 var dictionary;
 
 app.configure('production', function() {
 	dictionary = new Dictionary({
-		file: __dirname + '/dictionary.json'
+		file: __dirname + '/../db/dictionary.json'
 	});
 });
 
 app.configure('test', function() {
 	dictionary = new Dictionary({
-		file: __dirname + '/test/test_dictionary.json'
+		file: __dirname + '/../test/test_dictionary.json'
 	});
 });
 
