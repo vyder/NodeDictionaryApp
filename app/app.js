@@ -18,9 +18,11 @@ app.configure('test', function() {
 });
 
 // Routes
+app.get('/', require("./route-index"));
 app.get('/hello', require("./route-hello"));
 app.get('/lookup', require("./route-lookup")(dictionary));
 app.get('/add', require("./route-add")(dictionary));
 app.get('/remove', require("./route-remove")(dictionary));
+
 
 module.exports = app;
