@@ -1,6 +1,6 @@
 process.env.NODE_ENV = 'production';
 
-var app = require("./app");
+var app = require("./app/app.js");
 
 // Config
 var PORT = 3000;
