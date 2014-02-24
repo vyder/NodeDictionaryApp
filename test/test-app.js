@@ -17,25 +17,111 @@ var writeTestDictionary = function(dictionary) {
 	fs.writeFileSync(dictionaryPath, fileContent, 'utf8');
 };
 var removeTestDictionary = function() {
-	fs.unlinkSync('./test/test_dictionary.json');
+	fs.unlinkSync(dictionaryPath);
 };
+
+// Set up the dictionary
 writeTestDictionary();
 
 process.env.NODE_ENV = 'test';
 var app = require("../app.js");
 
-describe('GET /hello', function() {
-	it('responds with plain text', function(done) {
-		request(app)
-			.get('/hello')
-			.expect(200, done);
+describe('Test static paths', function() {
+	describe('GET /hello', function() {
+		it('responds with plain text', function(done) {
+			request(app)
+				.get('/hello')
+				.expect(200, done);
+		});
 	});
 });
 
+describe('Test /lookup', function() {
+	for( word in test_dictionary ) {
+		describe("Lookup a word that exists: " + word, function() {
+			it('responds with correct definition', function(done) {
+				request(app)
+					.get('/lookup?word=' + word)
+					.set('Accept', 'application/json')
+					.expect('Content-Type', /application\/json/)
+					.expect(200)
+					.end(function(error, response) {
+						if(error)
+							return done(error);
 
-// Test /lookup
-for( word in test_dictionary ) {
-	describe("Lookup a word that exists: " + word, function() {
+						var data = response.body;
+						data.should.have.property('word', word);
+						data.should.have.property('definition', test_dictionary[word]);
+
+						done();
+					});
+			});
+		});
+	}
+
+	describe("Lookup a word that doesn't exist", function() {
+		it('responds with error message', function(done) {
+			var word = "asdfasdhf";
+			request(app)
+				.get('/lookup?word=' + word)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('error');
+					data.error.should.have.property('message');
+
+					done();
+				});
+		});
+	});
+});
+
+describe('Test /add', function() {
+	describe("Add a word that doesn't exist", function() {
+		var word = "things";
+		var definition = "just stuff";
+
+		it("verify that word doesn't exist", function(done) {
+			request(app)
+				.get('/lookup?word=' + word)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('error');
+					data.error.should.have.property('message');
+
+					done();
+				});
+		});
+
+		it("responds with success on adding the new word", function(done) {
+			request(app)
+				.get('/add?word=' + word + '&definition=' + definition)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('success');
+					data.success.should.have.property('message');
+
+					done();
+				});
+		});
+
 		it('responds with correct definition', function(done) {
 			request(app)
 				.get('/lookup?word=' + word)
@@ -48,33 +134,14 @@ for( word in test_dictionary ) {
 
 					var data = response.body;
 					data.should.have.property('word', word);
-					data.should.have.property('definition', test_dictionary[word]);
+					data.should.have.property('definition', definition);
 
 					done();
 				});
 		});
 	});
-}
-
-describe("Lookup a word that doesn't exist", function() {
-	it('responds with error message', function(done) {
-		var word = "asdfasdhf";
-		request(app)
-			.get('/lookup?word=' + word)
-			.set('Accept', 'application/json')
-			.expect('Content-Type', /application\/json/)
-			.expect(200)
-			.end(function(error, response) {
-				if(error)
-					return done(error);
-
-				var data = response.body;
-				data.should.have.property('error');
-				data.error.should.have.property('message');
-
-				done();
-			});
-	});
 });
 
-removeTestDictionary();
+after(function() {
+	removeTestDictionary();
+});
