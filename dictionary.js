@@ -41,12 +41,7 @@ Dictionary.prototype._writeToFile = function() {
 	// Write the dictionary to prettily formatted string
 	var fileContent = JSON.stringify(this._dictionary, null, 4);
 
-	fs.writeFile(this._file, fileContent, 'utf8', function (error) {
-		if (error) {
-			// hmm
-			return;
-		}
-	});
+	fs.writeFile(this._file, fileContent, 'utf8');
 };
 
 module.exports = Dictionary;

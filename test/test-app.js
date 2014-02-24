@@ -140,6 +140,160 @@ describe('Test /add', function() {
 				});
 		});
 	});
+
+	describe("Make invalid requests", function() {
+		var word = "aasdfasdf";
+		var definition = "more gibberish...wait, what?";
+
+		it("request without 'word'", function(done) {
+			request(app)
+				.get('/add?definition=' + definition)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('error');
+					data.error.should.have.property('message');
+
+					done();
+				});
+		});
+
+		it("request without 'definition'", function(done) {
+			request(app)
+				.get('/add?word=' + word)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('error');
+					data.error.should.have.property('message');
+
+					done();
+				});
+		});
+	});
+
+	describe("Can overwrite a word", function() {
+		var word = "glitter";
+		var definition = "shiny things";
+
+		it("verify that word doesn't exist", function(done) {
+			request(app)
+				.get('/lookup?word=' + word)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('error');
+					data.error.should.have.property('message');
+
+					done();
+				});
+		});
+
+		it("responds with success on adding the new word", function(done) {
+			request(app)
+				.get('/add?word=' + word + '&definition=' + definition)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('success');
+					data.success.should.have.property('message');
+
+					done();
+				});
+		});
+
+		it('responds with correct definition', function(done) {
+			request(app)
+				.get('/lookup?word=' + word)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('word', word);
+					data.should.have.property('definition', definition);
+
+					done();
+				});
+		});
+
+		it("responds with error on trying to the same word", function(done) {
+			request(app)
+				.get('/add?word=' + word + '&definition=' + definition)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('error');
+					data.error.should.have.property('message');
+
+					done();
+				});
+		});
+
+		it("responds with success on trying to overwrite the same word", function(done) {
+			request(app)
+				.get('/add?word=' + word + '&definition=' + definition + '&overwrite=' + 1)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('success');
+					data.success.should.have.property('message');
+
+					done();
+				});
+		});
+
+		it('responds with correct definition', function(done) {
+			request(app)
+				.get('/lookup?word=' + word)
+				.set('Accept', 'application/json')
+				.expect('Content-Type', /application\/json/)
+				.expect(200)
+				.end(function(error, response) {
+					if(error)
+						return done(error);
+
+					var data = response.body;
+					data.should.have.property('word', word);
+					data.should.have.property('definition', definition);
+
+					done();
+				});
+		});
+	});
 });
 
 after(function() {
