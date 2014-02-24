@@ -33,7 +33,7 @@ var app = require("../app/app.js");
 
 
 describe('Test static paths', function() {
-	describe('GET /hello', function() {
+	describe('Says hello', function() {
 		it('responds with plain text', function(done) {
 			request(app)
 				.get('/hello')
