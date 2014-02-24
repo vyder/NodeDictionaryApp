@@ -61,16 +61,32 @@ app.get('/add', function(req, res) {
 		res.send(response);
 	}
 
-	var result = dictionary.add(
-		req.query.word,
-		req.query.definition,
-		req.query.overwrite
-	);
+	var result = dictionary.add( word, definition, overwrite );
 
 	if( result ) {
 		response.success = { message: "Successfully added '" + word + "'." };
 	} else {
 		response.error = { message: "'" + word + "' already exists in the dictionary. Specify parameter 'overwrite' to true." };
+	}
+	res.send(response);
+});
+
+app.get('/remove', function(req, res) {
+	req.header('Content-Type', 'application/json');
+	var response = {};
+
+	var word = req.query.word;
+	if( !word ) {
+		response.error = { message: "'word' is a required parameter" };
+		res.send(response);
+	}
+
+	var result = dictionary.remove( word );
+
+	if( result ) {
+		response.success = { message: "Successfully removed '" + word + "'." };
+	} else {
+		response.error = { message: "'" + word + "' doesn't exists in the dictionary." };
 	}
 	res.send(response);
 });

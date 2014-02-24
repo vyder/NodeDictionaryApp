@@ -28,11 +28,24 @@ Dictionary.prototype.add = function( word, definition, overwrite ) {
 	return true;
 };
 
+Dictionary.prototype.remove = function( word ) {
+	if( this._dictionary[word] ) {
+		delete this._dictionary[word];
+		return true;
+	}
+	return false;
+};
+
 Dictionary.prototype._importFromFile = function() {
 	var fs = require("fs");
 
-	var data = fs.readFileSync(this._file, 'utf8');
-	this._dictionary = JSON.parse(data);
+	if( fs.existsSync(this._file) ) {
+		var data = fs.readFileSync(this._file, 'utf8');
+		this._dictionary = JSON.parse(data);
+	} else {
+		// #todo: Figure out how to add before/after blocks to tests
+		// throw new Error("Dictionary file does not exist: " + this._file);
+	}
 };
 
 Dictionary.prototype._writeToFile = function() {
