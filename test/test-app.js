@@ -11,11 +11,11 @@ var writeTestDictionary = function(dictionary) {
 	fs.writeFileSync(dictionaryPath, fileContent, 'utf8');
 };
 var removeTestDictionary = function() {
-	// if( fs.existsSync(dictionaryPath) ) {
+	if( fs.existsSync(dictionaryPath) ) {
 		fs.unlinkSync(dictionaryPath);
-	// } else {
-		// console.log("hmmm: " + dictionaryPath);
-	// }
+	} else {
+		console.log("hmmm: " + dictionaryPath);
+	}
 };
 
 var test_dictionary = {
