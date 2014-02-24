@@ -193,7 +193,7 @@ describe('Test /add', function() {
 		});
 	});
 
-	describe("Can overwrite a word", function() {
+	describe("Overwrite a word", function() {
 		var word = "glitter";
 		var definition = "shiny things";
 
