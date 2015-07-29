@@ -1,21 +1,30 @@
-module.exports = function(dictionary) {
-	return function(req, res) {
-		req.header('Content-Type', 'application/json');
-		var response = {};
+'use strict';
 
-		var word = req.query.word;
-		if( !word ) {
-			response.error = { message: "'word' is a required parameter" };
-			res.send(response);
-		}
+module.exports = function( dictionary ) {
+    return function( req, res ) {
+        req.header( 'Content-Type', 'application/json' );
+        var response = {};
 
-		var result = dictionary.remove( word );
+        var word = req.query.word;
+        if ( !word ) {
+            response.error = {
+                message: '"word" is a required parameter'
+            };
+            res.send( response );
+        }
 
-		if( result ) {
-			response.success = { message: "Successfully removed '" + word + "'." };
-		} else {
-			response.error = { message: "'" + word + "' doesn't exists in the dictionary." };
-		}
-		res.send(response);
-	};
+        var result = dictionary.remove( word );
+
+        if ( result ) {
+            response.success = {
+                message: 'Successfully removed "' + word + '".'
+            };
+        }
+        else {
+            response.error = {
+                message: '"' + word + '" doesn\'t exist in the dictionary.'
+            };
+        }
+        res.send( response );
+    };
 };
