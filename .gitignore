@@ -2,3 +2,4 @@
 node_modules/
 dictionary.json
 coverage/
+test/test_*.json
