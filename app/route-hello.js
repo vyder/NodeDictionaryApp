@@ -1,4 +1,6 @@
-module.exports = function(req, res) {
-	res.header('Content-Type', 'text/plain');
-	res.send("Hello.");
+'use strict';
+
+module.exports = function( req, res ) {
+    res.header( 'Content-Type', 'text/plain' );
+    res.send( 'Hello.' );
 };

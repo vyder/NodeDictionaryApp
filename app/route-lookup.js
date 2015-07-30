@@ -1,24 +1,27 @@
-module.exports = function(dictionary) {
-	return function(req, res) {
-		req.header('Content-Type', 'application/json');
-		var response = {};
+'use strict';
 
-		var word = req.query.word;
-		var definition = dictionary.lookup(word);
+module.exports = function( dictionary ) {
+    return function( req, res ) {
+        req.header( 'Content-Type', 'application/json' );
+        var response = {};
 
-		if( definition ) {
-			response = {
-				word: word,
-				definition: definition
-			};
-		} else {
-			response = {
-				error: {
-					message: "Oops. We don't have that word yet"
-				}
-			};
-		}
+        var word = req.query.word;
+        var definition = dictionary.lookup( word );
 
-		res.send(response);
-	};
+        if ( definition ) {
+            response = {
+                word: word,
+                definition: definition
+            };
+        }
+        else {
+            response = {
+                error: {
+                    message: 'Oops. We don\'t have that word yet'
+                }
+            };
+        }
+
+        res.send( response );
+    };
 };
