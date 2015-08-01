@@ -1,6 +1,22 @@
 'use strict';
 
-module.exports = function( req, res ) {
-    res.header( 'Content-Type', 'text/plain' );
-    res.send( 'this will return an index of all dictionary words ' );
+module.exports = function( dictionary ) {
+    return function( req, res ) {
+        req.header( 'Content-Type', 'application/json' );
+        var response = {};
+        var entries = dictionary.all();
+
+        if ( entries ) {
+            response = dictionary._dictionary;
+        }
+        else {
+            response = {
+                error: {
+                    mesage: 'Oops. There appears to be no dictionary!'
+                }
+            };
+        }
+
+        res.send( response );
+    };
 };

@@ -7,7 +7,8 @@ A simple dictionary app
 
 ## Routes
 - /hello
-- /define?word=banana
+- /index
+- /lookup?word=banana
 - /add?word=things&definition=just+stuff
 - /add?word=things&definition=just+stuff+and+more+stuff&overwrite=1
 - /remove?word=things
