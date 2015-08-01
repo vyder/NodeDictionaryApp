@@ -21,6 +21,4 @@ app.get( '/lookup', require( './route-lookup' )( dictionary ) );
 app.get( '/add', require( './route-add' )( dictionary ) );
 app.get( '/remove', require( './route-remove' )( dictionary ) );
 
-app.get( '/hello', require( './route-hello' ) );
-
 module.exports = app;
